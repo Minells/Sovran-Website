@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+import InstallCTA from '../components/InstallCTA.astro';
+import Connection from '../components/Connection.astro';
+import { ArrowUpRight, ShieldCheck, Undo2, ScanText, Plug, GitBranch, Braces, Check, Eye, Pencil, FileCode, GitFork } from '@lucide/astro';
+import { project, source, withBase } from '../lib/project';
+const capabilities = [
+  { icon: Undo2, title: 'Room to change your mind.', text: 'Undo the file changes from a response. Retry an answer or edit a message and continue from there. Terminal side effects are outside checkpoints.' },
+  { icon: ScanText, title: 'Context, without the guesswork.', text: 'Mention files with @, attach documents or images, and watch the context meter. Older messages can be summarized while your transcript stays visible.' },
+  { icon: Plug, title: 'Tools beyond your workspace.', text: 'Connect local or remote MCP servers in Settings. Tools ask for approval in every mode until you explicitly allow them.' },
+  { icon: Braces, title: 'Built for real-world endpoints.', text: 'Native and prompted tool calling, streaming and non-streaming responses. Separate models for planning, acting, and naming chats.' },
+];
+---
+<Layout>
+  <section class="hero wrap grid items-center gap-12 pb-14 pt-16 lg:grid-cols-[1.05fr_1fr] lg:gap-12 lg:pb-20 lg:pt-24">
+    <div class="hero-copy">
+      <a class="preview-label inline-flex items-center gap-2" href={withBase('documentation/#limitations')}><span class="brand-dot"></span> Open source. Built for your models. <ArrowUpRight size={14} aria-hidden="true" /></a>
+      <h1 class="hero-title mt-7">Own your<br />intelligence.</h1>
+      <p class="hero-description mt-7 max-w-lg">An AI coding agent for the models you control. Local, self-hosted, or behind your company gateway. Right inside VS Code.</p>
+      <div class="mt-9"><InstallCTA /></div>
+    </div>
+    <Connection />
+  </section>
+
+  <section class="wrap pb-20" aria-labelledby="showcase-title">
+    <div class="showcase-heading flex flex-wrap items-center justify-between gap-4 pb-5">
+      <h2 id="showcase-title" class="flex items-center gap-2.5 text-sm"><FileCode size={17} aria-hidden="true" /> Your workspace. Your next move.</h2>
+      <span class="text-xs text-muted">Read. Plan. Review. Apply.</span>
+    </div>
+    <figure class="product-frame">
+      <div class="product-bar flex items-center justify-between gap-4"><span class="flex items-center gap-2"><img src={withBase('brand/sovran-mark-on-dark.svg')} width="20" height="20" alt="" /> Sovran / Chat in editor</span><span class="hidden sm:block">File changes, ready for your review</span></div>
+      <a href={withBase('screenshots/editor-tab-dark.png')} aria-label="Open the product screenshot at full size"><picture><source srcset={withBase('screenshots/editor-tab-dark.webp')} type="image/webp" /><img src={withBase('screenshots/editor-tab-dark.png')} width="2200" height="1400" alt="Sovran's editor chat showing a proposed session TTL change, an inline diff, and Reject and Apply controls above the composer." fetchpriority="high" /></picture></a>
+      <figcaption>From the project’s screenshot gallery. Example session, with an edit waiting for approval. Select the image to view full size.</figcaption>
+    </figure>
+    <div class="provider-strip flex flex-wrap items-center justify-between gap-x-6 gap-y-4 pt-9"><p>Connect an OpenAI-compatible endpoint</p><div class="flex flex-wrap gap-x-7 gap-y-3"><span>Ollama</span><span>LM Studio</span><span>vLLM</span><span>LiteLLM</span><span>Your gateway</span></div></div>
+  </section>
+
+  <section id="features" class="section-band scroll-mt-24">
+    <div class="wrap py-20 lg:py-28">
+      <div class="grid gap-8 md:grid-cols-2 md:gap-20">
+        <h2 class="section-title">Let the agent work.<br />Keep the decisions.</h2>
+        <p class="section-description self-end">Sovran reads your code, searches the workspace, proposes edits, and runs commands. You choose the model and how much it can do.</p>
+      </div>
+      <div class="mode-grid mt-12 grid gap-px overflow-hidden rounded-xl border border-rule md:grid-cols-2">
+        <article class="mode-panel p-7 sm:p-10"><Eye size={26} aria-hidden="true" /><h3 class="mt-6 text-2xl font-semibold">Think it through in Plan.</h3><p class="mt-4 text-muted">Explore a codebase, understand a failure, or work out an approach. Write and execute tools are unavailable in Plan mode.</p><div class="mt-7 flex flex-wrap gap-2"><span class="capability-chip">Read & search</span><span class="capability-chip">Explain & plan</span><span class="capability-chip">Read-only tools</span></div></article>
+        <article class="mode-panel p-7 sm:p-10"><Pencil size={26} aria-hidden="true" /><h3 class="mt-6 text-2xl font-semibold">Make it happen in Act.</h3><p class="mt-4 text-muted">Go from a plan to file edits and terminal commands. Ask mode starts with diff review and command approvals; Auto-edit and Auto are optional.</p><div class="mt-7 flex flex-wrap gap-2"><span class="capability-chip">Native diffs</span><span class="capability-chip">Terminal commands</span><span class="capability-chip">Configurable approvals</span></div></article>
+      </div>
+      <p class="mt-5 flex items-start gap-2 text-sm text-muted"><ShieldCheck size={18} class="mt-0.5 shrink-0" aria-hidden="true" />Protected paths and risky commands still ask in Auto mode. Restricted workspaces stay in Plan.</p>
+      <div class="mt-16 grid gap-x-14 gap-y-12 sm:grid-cols-2">
+        {capabilities.map(({ icon: Icon, title, text }) => <article class="feature-item"><Icon size={23} aria-hidden="true" /><h3 class="mb-3 mt-5 text-xl font-semibold">{title}</h3><p class="text-muted">{text}</p></article>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap grid items-center gap-10 py-20 md:grid-cols-[1fr_0.9fr] lg:gap-24 lg:py-28" aria-labelledby="setup-title">
+    <div>
+      <h2 id="setup-title" class="section-title">Your first chat starts<br />with your endpoint.</h2>
+      <p class="section-description mt-6">No SOVRAN account. No SOVRAN server. The extension connects directly to the provider you configure.</p>
+      <ol class="workflow mt-10 space-y-7">
+        <li><span class="step-number">1</span><div><h3>Choose where your model runs</h3><p>Pick a local preset, a self-hosted server, or a custom gateway.</p></div></li>
+        <li><span class="step-number">2</span><div><h3>Connect and pick a model</h3><p>Check the endpoint URL. Keys, when needed, stay in VS Code Secret Storage.</p></div></li>
+        <li><span class="step-number">3</span><div><h3>Bring a task to your workspace</h3><p>Attach context, plan an approach, and review the changes in Act mode.</p></div></li>
+      </ol>
+      <a class="text-link mt-8 inline-flex items-center gap-2" href={withBase('documentation/')}>Read the getting started guide <ArrowUpRight size={17} aria-hidden="true" /></a>
+    </div>
+    <figure class="setup-figure mx-auto w-full max-w-sm"><picture><source srcset={withBase('screenshots/onboarding-dark.webp')} type="image/webp" /><img src={withBase('screenshots/onboarding-dark.png')} width="840" height="1720" loading="lazy" alt="Sovran guided setup with Ollama, LM Studio, vLLM, LiteLLM and custom endpoint options." /></picture><figcaption>Choose your provider in the guided setup.</figcaption></figure>
+  </section>
+
+  <section class="wrap pb-20 lg:pb-28" aria-labelledby="privacy-title">
+    <div class="privacy-panel grid gap-10 rounded-2xl border border-rule p-8 md:grid-cols-[1fr_1fr] md:p-12">
+      <div><ShieldCheck size={28} aria-hidden="true" /><h2 id="privacy-title" class="mt-6 text-3xl font-semibold tracking-tight">A direct path to your model.</h2><p class="mt-5 max-w-md text-muted">No telemetry and no SOVRAN backend. Model requests go to your configured endpoint. Attached context goes with them, so choose a provider you trust.</p></div>
+      <ul class="space-y-5 self-center text-sm">
+        <li class="flex gap-3"><Check size={18} aria-hidden="true" /><span>API keys in VS Code Secret Storage</span></li>
+        <li class="flex gap-3"><Check size={18} aria-hidden="true" /><span>Provider and approval settings read from user scope</span></li>
+        <li class="flex gap-3"><Check size={18} aria-hidden="true" /><span>Document text extracted on your machine</span></li>
+        <li class="flex gap-3"><Check size={18} aria-hidden="true" /><span>Chat persistence can be disabled; saved chats are plaintext</span></li>
+        <li><a class="text-link inline-flex items-center gap-2" href={source('SECURITY.md')}>Explore the security model <ArrowUpRight size={16} aria-hidden="true" /></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-band">
+    <div class="wrap grid gap-10 py-20 md:grid-cols-[1.1fr_1fr] md:gap-20 lg:py-24">
+      <div><GitBranch size={29} aria-hidden="true" /><h2 class="section-title mt-6">Open source.<br />Open to your ideas.</h2><p class="section-description mt-6">Read the code. Report what breaks. Help make local and self-hosted coding agents more useful. SOVRAN is released under the MIT license.</p></div>
+      <div class="self-center">
+        <a class="resource-row" href={project.repository}><span><strong>Explore the source</strong><small>The extension, tests, and design decisions</small></span><GitFork size={21} aria-hidden="true" /></a>
+        <a class="resource-row" href={source('CONTRIBUTING.md')}><span><strong>Make a contribution</strong><small>Bug reports, docs, compatibility testing, and code</small></span><ArrowUpRight size={21} aria-hidden="true" /></a>
+        <a class="resource-row" href={source('docs/ROADMAP.md')}><span><strong>Follow the roadmap</strong><small>Current plans and their implementation status</small></span><ArrowUpRight size={21} aria-hidden="true" /></a>
+      </div>
+    </div>
+  </section>
+  <section class="wrap py-20 lg:py-28"><div class="grid items-center gap-10 lg:grid-cols-2"><div><img src={withBase('brand/sovran-mark-on-dark.svg')} width="48" height="48" alt="" /><h2 class="section-title mt-5">Your models.<br />Your next commit.</h2></div><div><p class="section-description mb-7">Bring the model you run into the editor you use.</p><InstallCTA /></div></div></section>
+</Layout>

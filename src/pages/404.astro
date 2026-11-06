@@ -1,0 +1,5 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { withBase } from '../lib/project';
+---
+<Layout title="Page not found" noindex={true} description="This SOVRAN page could not be found."><div class="wrap py-28"><p class="mb-5 text-sm text-muted">404</p><h1 class="section-title">That page isn’t here.</h1><p class="mb-8 mt-5 text-muted">Head back to the homepage or open the documentation.</p><div class="flex flex-wrap gap-3"><a class="button button-primary" href={withBase()}>Back to SOVRAN</a><a class="button button-secondary" href={withBase('documentation/')}>Read documentation</a></div></div></Layout>

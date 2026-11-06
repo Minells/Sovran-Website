@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { project, source } from '../lib/project';
+const sections = [['installation','Installation'],['getting-started','Your first chat'],['providers','Providers & config'],['modes','Modes & approvals'],['context','Context & recovery'],['mcp','MCP tools'],['settings','Settings reference'],['limitations','Known limitations']];
+const yaml = `providers:
+  - id: ollama
+    name: Ollama
+    baseUrl: http://localhost:11434/v1
+    auth: none
+    models:
+      - id: qwen2.5-coder:14b
+        contextWindow: 32768
+
+defaultModel: ollama/qwen2.5-coder:14b`;
+const build = `git clone https://github.com/Minells/sovran.git
+cd sovran
+npm ci --ignore-scripts
+npm run package
+code --install-extension sovran-0.1.0.vsix`;
+---
+<Layout title="Documentation" description="Install SOVRAN, connect an OpenAI-compatible endpoint, choose Plan or Act, and configure models, approvals, context, and MCP tools in VS Code.">
+  <div class="wrap">
+    <header class="page-heading"><h1>A model you control.<br />A workflow you know.</h1><p>From your first endpoint to your first reviewed edit. This guide covers the features implemented in the extension’s current preview.</p></header>
+    <div class="grid gap-12 pb-12 md:grid-cols-[180px_minmax(0,1fr)] lg:gap-20">
+      <aside><nav aria-label="On this page" class="docs-nav md:sticky md:top-28"><strong>In this guide</strong>{sections.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}<a href={source('docs/USER_GUIDE.md')}>Full extension reference ↗</a></nav></aside>
+      <div class="prose">
+        <section id="installation">
+          <h2>Installation</h2>
+          <p>You need <strong>VS Code 1.95 or later</strong> and access to an OpenAI-compatible Chat Completions endpoint. Running a local model also requires a model server and hardware suitable for that model.</p>
+          <div class="callout"><p><strong>Preview availability.</strong> The extension manifest identifies <code>minells.sovran</code>. The project documentation still marks Marketplace publication as pending. <a href={project.marketplace}>Check the Marketplace listing</a>; if it is unavailable, build a VSIX from source.</p></div>
+          <h3>Build a VSIX</h3><p>The source package is currently version 0.1.0. Use Node.js 22 for the extension’s current CI toolchain. The package command builds the extension before creating the VSIX.</p>
+          <pre><code>{build}</code></pre>
+          <p>You can also use <strong>Extensions → … → Install from VSIX…</strong>. Check <code>package.json</code> for the filename if the version has changed. See <a href={source('docs/DEVELOPMENT.md')}>development instructions</a> for the test suite and VS Code debugging setup.</p>
+        </section>
+        <section id="getting-started">
+          <h2>Your first chat</h2>
+          <ol><li>Open a project in VS Code and select the <strong>Sovran</strong> Activity Bar icon.</li><li>In guided setup, choose Ollama, LM Studio, vLLM, LiteLLM, or a custom endpoint.</li><li>Check the base URL, including <code>/v1</code>. Choose no authentication, a bearer key, or a custom header as required by your server.</li><li>Select a model reported by the endpoint, or type the model ID. A local model must already be available on your server.</li><li>Start in <strong>Plan</strong> to explore the code. Switch to <strong>Act</strong> when you want file changes or terminal commands.</li></ol>
+          <p>Try <code>/explain</code> with a selected function, <code>/review @src/example.ts</code> with a file from your workspace, or ask “Find the code that handles authentication and explain its flow.” Replace the example path with one in your project.</p>
+        </section>
+        <section id="providers">
+          <h2>Providers & configuration</h2>
+          <p>The extension connects to an OpenAI-compatible <code>/chat/completions</code> API. The guided setup includes these presets; an endpoint being listed is not a guarantee for every model and server configuration.</p>
+          <div class="table-scroll" role="region" aria-label="Provider endpoint examples" tabindex="0"><table><thead><tr><th>Provider</th><th>Default local base URL</th></tr></thead><tbody><tr><td>Ollama</td><td><code>http://localhost:11434/v1</code></td></tr><tr><td>LM Studio</td><td><code>http://localhost:1234/v1</code></td></tr><tr><td>vLLM</td><td><code>http://localhost:8000/v1</code></td></tr><tr><td>LiteLLM</td><td><code>http://localhost:4000/v1</code></td></tr></tbody></table></div>
+          <p>Use <strong>Settings → Models → Manage providers</strong> or <code>sovran.providers</code> in VS Code user settings. Provider settings from a repository are ignored. Store keys with <strong>Sovran: Set Provider API Key…</strong>, never in configuration files.</p>
+          <h3>Prefer YAML?</h3><p><strong>Sovran: Open Model Config File (config.yaml)</strong> creates or opens <code>~/.sovran/config.yaml</code>. Once enabled, the file and provider settings stay in sync while preserving comments. Here is an example using an Ollama model; pull that model first or replace its ID with one you run.</p><pre><code>{yaml}</code></pre>
+          <p>For each model, you can set <code>contextWindow</code>, <code>maxOutputTokens</code>, <code>temperature</code>, <code>vision</code>, and <code>toolMode</code> (<code>auto</code>, <code>native</code>, <code>prompted</code>, or <code>none</code>). Auto detects support and can fall back to prompted tool calls. The full guide covers <a href={source('docs/USER_GUIDE.md#provider-setup-examples')}>gateway authentication and model limits</a>.</p>
+          <p>Set a separate Plan model or Title model in Settings. A blank Plan model uses the Act model; a blank Title model uses the chat’s model.</p>
+        </section>
+        <section id="modes">
+          <h2>Modes & approvals</h2>
+          <p><strong>Plan</strong> reads and searches. Tools that edit files, run commands, or call MCP servers are unavailable. <strong>Act</strong> enables those tools under your approval policy. In an untrusted workspace, Sovran stays in Plan.</p>
+          <div class="table-scroll" role="region" aria-label="Approval mode comparison" tabindex="0"><table><thead><tr><th>Mode</th><th>File changes</th><th>Commands</th></tr></thead><tbody><tr><td>Ask (default)</td><td>Review each diff</td><td>Ask, unless explicitly allow-listed</td></tr><tr><td>Auto-edit</td><td>Apply without asking</td><td>Ask, unless explicitly allow-listed</td></tr><tr><td>Auto</td><td>Apply without asking</td><td>Run without asking, subject to guardrails</td></tr></tbody></table></div>
+          <p>Protected paths and risky commands still ask in every mode. Auto requires confirmation and a trusted workspace. Review the exact action above the composer, then approve, reject, or reject with feedback.</p>
+          <ul><li><code>Alt+M</code>: switch Plan / Act in chat.</li><li><code>Alt+A</code>: cycle approval modes in chat.</li><li><code>Enter</code>: send; <code>Shift+Enter</code>: newline; <code>Esc</code>: stop.</li><li>With an approval pending and an empty input, <code>Enter</code> approves and <code>Esc</code> rejects. Text you are typing keeps its keys.</li><li><code>Ctrl+Alt+Y</code> / <code>Cmd+Alt+Y</code>: focus Sovran.</li></ul>
+          <p>For the full controls and their limits, read the <a href={source('SECURITY.md')}>security model</a>.</p>
+        </section>
+        <section id="context">
+          <h2>Context & recovery</h2>
+          <p>Type <code>@</code> to find workspace files, use the paperclip for attachments, or ask about the current selection. Documents are converted to text locally before that text is sent to your model: PDF, modern Office, OpenDocument, and ZIP listings are supported. Image input needs a vision-capable model.</p>
+          <p>The composer’s context meter shows the estimated usage. Automatic compaction summarizes older turns when needed; <code>/compact</code> requests it directly. The full transcript remains visible.</p>
+          <p><strong>Undo changes</strong> restores files changed through the agent’s file tools for that response, with a conflict check for later edits. Terminal command effects are not checkpointed. <strong>Retry</strong> regenerates the last response; <strong>Edit</strong> on a message continues from that point and can undo discarded file changes.</p>
+          <p>Built-in slash commands are <code>/explain</code>, <code>/fix</code>, <code>/test</code>, <code>/review</code>, <code>/doc</code>, <code>/compact</code>, and <code>/new</code>. Add a Markdown file under <code>.sovran/commands/</code> for a custom prompt, using <code>$ARGUMENTS</code> where the command’s text should go. Workspace commands require trust.</p>
+        </section>
+        <section id="mcp">
+          <h2>MCP tools</h2>
+          <p>Add servers in <strong>Settings → MCP</strong> using a preset, a form, or a server’s JSON snippet. Local servers use stdio; remote servers use Streamable HTTP. Tokens are stored in Secret Storage.</p>
+          <p>Each tool can be <strong>Off</strong>, <strong>Ask</strong>, or <strong>Allow</strong>. Ask is the default, including in Auto mode. Only user-configured servers can run, and only in trusted workspaces. Calls are available in Act mode.</p>
+          <p>MCP currently covers tools. Resources, prompts, sampling, OAuth login, and older SSE-only servers are not supported. Servers are configured in Settings, not <code>config.yaml</code>. See the <a href={source('docs/USER_GUIDE.md#mcp-servers')}>full MCP reference</a>.</p>
+        </section>
+        <section id="settings">
+          <h2>Settings reference</h2>
+          <p>Open the gear in the Sovran view title. These frequently used settings also appear in VS Code Settings.</p>
+          <div class="table-scroll" role="region" aria-label="Common extension settings" tabindex="0"><table><thead><tr><th>Setting</th><th>Default</th><th>Purpose</th></tr></thead><tbody>
+            <tr><td><code>sovran.approvals.mode</code></td><td><code>ask</code></td><td>New-window approval policy</td></tr>
+            <tr><td><code>sovran.agent.maxIterations</code></td><td>25</td><td>Model round-trips per request</td></tr>
+            <tr><td><code>sovran.terminal.timeoutSeconds</code></td><td>120</td><td>Agent command timeout</td></tr>
+            <tr><td><code>sovran.context.autoCompact</code></td><td>true</td><td>Summarize older conversation turns</td></tr>
+            <tr><td><code>sovran.context.projectInstructions</code></td><td>true</td><td>Read root AGENTS.md in trusted workspaces</td></tr>
+            <tr><td><code>sovran.sessions.persist</code></td><td>true</td><td>Keep chats across restarts</td></tr>
+            <tr><td><code>sovran.sessions.generateTitles</code></td><td>true</td><td>Use an extra model request for a chat title</td></tr>
+          </tbody></table></div>
+          <p>All settings and defaults are listed in the <a href={source('docs/USER_GUIDE.md#settings')}>extension reference</a> and declared in the <a href={source('package.json')}>extension manifest</a>.</p>
+        </section>
+        <section id="limitations">
+          <h2>Known limitations</h2>
+          <ul><li>This is preview software. Real-server compatibility testing is ongoing; quality depends on the selected model and its tool support.</li><li>Code and attached context go to the endpoint you choose. MCP tools can contact services according to each server’s behavior.</li><li>Persisted chats, images, and checkpoints live in workspace storage and are not encrypted at rest. Disable session persistence if needed.</li><li>Undo does not restore changes made by terminal commands. Parallel chats share the same files.</li><li>Documents supply text, not embedded images or layout. Scanned PDFs need OCR elsewhere. Old binary Office files are not supported. Attachment text is capped at 50,000 characters.</li><li>Image input supports PNG, JPEG, WebP, and GIF, up to eight images of 8 MB each per message. Some endpoints silently ignore images.</li><li>Long-running commands such as watchers and dev servers are not supported as agent commands. Virtual workspaces are not supported.</li></ul>
+          <p>Read the <a href={source('docs/USER_GUIDE.md#known-limitations')}>full limitations</a> and <a href={source('docs/IMPLEMENTATION_STATUS.md')}>implementation status</a> before choosing a workflow.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Bug, GitPullRequest, BookOpen, ShieldCheck, ArrowUpRight, GitBranch } from '@lucide/astro';
+import { project, source } from '../lib/project';
+const cards = [
+  { icon: Bug, title: 'Make a useful bug report.', text: 'Share the VS Code version, operating system, provider type, model, and smallest steps to reproduce. Remove tokens, private code, and identifying endpoint details.', label: 'Open an issue', url: `${project.repository}/issues` },
+  { icon: GitPullRequest, title: 'Start with a small contribution.', text: 'Improve a guide, add a regression test, or fix a focused bug. For larger changes, discuss the design in an issue before writing code.', label: 'Read contribution guidelines', url: source('CONTRIBUTING.md') },
+  { icon: BookOpen, title: 'Help test real endpoints.', text: 'The automated suite exercises mock servers. Reports from real Ollama, LM Studio, vLLM, LiteLLM, and company gateway setups help fill the compatibility matrix.', label: 'Explore the testing guide', url: source('docs/DEVELOPMENT.md') },
+  { icon: ShieldCheck, title: 'Report security issues privately.', text: 'Use GitHub’s private reporting option if it is enabled. Never post credentials, exploit details, or sensitive logs in a public issue.', label: 'Read the reporting policy', url: source('SECURITY.md') },
+];
+---
+<Layout title="Community" description="Contribute to SOVRAN: report bugs, improve documentation, test local and self-hosted endpoints, review the roadmap, and explore the MIT-licensed source.">
+  <div class="wrap pb-20">
+    <header class="page-heading"><h1>Build a better way<br />to work with your models.</h1><p>SOVRAN is a small, open-source project. Clear reports, careful tests, and thoughtful contributions make it stronger.</p></header>
+    <div class="grid gap-6 md:grid-cols-2">{cards.map(({icon: Icon, title, text, label, url}) => <article class="community-card flex flex-col"><Icon size={25} aria-hidden="true" /><h2>{title}</h2><p class="mb-7">{text}</p><a class="text-link mt-auto inline-flex items-center gap-2" href={url}>{label}<ArrowUpRight size={16} aria-hidden="true" /></a></article>)}</div>
+    <section class="mt-16 grid gap-10 border-t border-rule pt-16 md:grid-cols-2">
+      <div><GitBranch size={27} aria-hidden="true" /><h2 class="section-title mt-6">Work in the open.</h2><p class="section-description mt-5">The roadmap records future direction. The implementation status records what has actually shipped in source. Read both when choosing a contribution.</p></div>
+      <div><a class="resource-row" href={source('docs/ROADMAP.md')}><span><strong>Roadmap</strong><small>Priorities and longer-term plans</small></span><ArrowUpRight size={20} aria-hidden="true" /></a><a class="resource-row" href={source('docs/IMPLEMENTATION_STATUS.md')}><span><strong>Implementation status</strong><small>Current progress and remaining manual checks</small></span><ArrowUpRight size={20} aria-hidden="true" /></a><a class="resource-row" href={source('CODE_OF_CONDUCT.md')}><span><strong>Community standards</strong><small>Respectful collaboration and maintainer responsibilities</small></span><ArrowUpRight size={20} aria-hidden="true" /></a><a class="resource-row" href={source('LICENSE')}><span><strong>MIT licensed</strong><small>Use, inspect, modify, and contribute</small></span><ArrowUpRight size={20} aria-hidden="true" /></a></div>
+    </section>
+  </div>
+</Layout>

@@ -1,0 +1,17 @@
+---
+import { Laptop, Server, Network, CodeXml } from '@lucide/astro';
+import { withBase } from '../lib/project';
+---
+<figure class="connection" aria-label="SOVRAN connects VS Code directly to your local model, self-hosted server, or company gateway.">
+  <div class="connection-grid" aria-hidden="true"></div>
+  <div class="connection-top flex items-center justify-between"><span>Your infrastructure</span><span class="connection-protocol">Chat Completions</span></div>
+  <div class="connection-map">
+    <div class="endpoint endpoint-local"><Laptop size={19} aria-hidden="true" /><div><strong>Local</strong><span>On your machine</span></div><span class="endpoint-dot"></span></div>
+    <div class="endpoint endpoint-server"><Server size={19} aria-hidden="true" /><div><strong>Self-hosted</strong><span>On your servers</span></div><span class="endpoint-dot"></span></div>
+    <div class="endpoint endpoint-gateway"><Network size={19} aria-hidden="true" /><div><strong>Company gateway</strong><span>On your terms</span></div><span class="endpoint-dot"></span></div>
+    <svg class="connection-lines" viewBox="0 0 500 350" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M185 65H235Q255 65 255 85V175H300M185 175H300M185 285H235Q255 285 255 265V175H300M350 175H420" /><path class="signal" d="M185 175H300M350 175H420" /></svg>
+    <div class="connection-core"><img src={withBase('brand/sovran-mark-on-dark.svg')} width="70" height="70" alt="" /></div>
+    <div class="connection-editor"><CodeXml size={23} aria-hidden="true" /><span>VS Code</span></div>
+  </div>
+  <figcaption class="connection-bottom"><span class="brand-dot"></span> Direct connection. No SOVRAN backend.</figcaption>
+</figure>

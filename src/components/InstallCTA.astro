@@ -1,0 +1,13 @@
+---
+import { ArrowUpRight, Download, GitFork } from '@lucide/astro';
+import { project, withBase } from '../lib/project';
+interface Props { compact?: boolean; }
+const { compact = false } = Astro.props;
+---
+<div>
+  <div class="flex flex-wrap gap-3">
+    <a class="button button-primary" href={project.marketplace}><Download size={18} aria-hidden="true" /> Install from Marketplace <ArrowUpRight size={16} aria-hidden="true" /></a>
+    <a class="button button-secondary" href={project.repository}><GitFork size={18} aria-hidden="true" /> Explore GitHub</a>
+  </div>
+  {!compact && <p class="install-note mt-4">Preview software · VS Code 1.95+<br />Marketplace publication is pending in the project docs. <a href={withBase('documentation/#installation')}>Build and install a VSIX</a>.</p>}
+</div>
